@@ -1,65 +1,107 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { ArrowRight, Flame, MapPin, Trophy } from 'lucide-react'
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col items-center justify-center pt-24 pb-12 px-6 overflow-hidden">
+      
+      {/* Background glow effects */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-[var(--accent)] rounded-full blur-[160px] opacity-[0.03] pointer-events-none" />
+
+      <div className="w-full max-w-7xl mx-auto space-y-6">
+        
+        {/* Bento Grid Top Section: Hero Split */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* Main Hero Card (60%) */}
+          <div className="lg:col-span-8 bg-[var(--bg-panel)] rounded-3xl p-10 lg:p-16 border border-[var(--border-subtle)] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)] rounded-full blur-[100px] opacity-[0.05] group-hover:opacity-10 transition-opacity duration-700" />
+            
+            <div className="relative z-10">
+              <span className="uppercase text-[11px] tracking-[0.2em] text-[var(--accent)] font-bold mb-6 block">
+                The Ultimate Racing Platform
+              </span>
+              <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tight leading-[0.9] text-[var(--text-primary)] mb-8">
+                Run Your <br /> Best Race.
+              </h1>
+              <p className="text-[var(--text-secondary)] text-lg max-w-md mb-10 leading-relaxed">
+                Discover local marathons, track your performance, and secure your spot at the starting line. Built for runners who demand more.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link 
+                  href="/events"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-dim)] text-[#0A0A0A] font-bold transition-all"
+                >
+                  Find a Race
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
+                <Link 
+                  href="/dashboard"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-transparent border border-[var(--border-subtle)] hover:border-[var(--text-primary)] text-[var(--text-primary)] font-bold transition-all"
+                >
+                  Organizer Login
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Secondary Hero Card (40%) */}
+          <div className="lg:col-span-4 bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-subtle)] flex flex-col justify-between relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-full bg-[var(--bg-panel-raised)] flex items-center justify-center mb-6 border border-[var(--border-subtle)]">
+                <Flame className="w-6 h-6 text-[var(--accent)]" />
+              </div>
+              <h3 className="text-3xl font-black uppercase tracking-tight text-[var(--text-primary)] mb-2">Live Heatmaps</h3>
+              <p className="text-[var(--text-secondary)]">Track real-time runner density and course difficulty before you register.</p>
+            </div>
+            
+            {/* Decorative Map Graphic */}
+            <div className="mt-8 h-48 w-full bg-[var(--bg-panel-raised)] rounded-2xl border border-[var(--border-subtle)] relative overflow-hidden">
+               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(var(--text-secondary) 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
+               <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                 <path d="M-10,120 Q50,150 100,80 T250,90 T350,40" fill="none" stroke="var(--accent)" strokeWidth="3" strokeDasharray="6 6" className="opacity-80" />
+               </svg>
+               <div className="absolute top-[80px] left-[100px] w-3 h-3 bg-[var(--accent)] rounded-full shadow-[0_0_15px_var(--accent)]" />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Bento Grid Bottom Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {/* Stat Card 1 */}
+          <div className="bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-subtle)] hover:border-[var(--border-accent)] transition-all">
+            <Trophy className="w-8 h-8 text-[var(--text-secondary)] mb-6" />
+            <div className="text-5xl font-black text-[var(--text-primary)] mb-2">12.4k</div>
+            <div className="uppercase text-[11px] tracking-[0.1em] text-[var(--text-secondary)] font-bold">Registered Runners</div>
+          </div>
+
+          {/* Stat Card 2 */}
+          <div className="bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-subtle)] hover:border-[var(--border-accent)] transition-all">
+            <MapPin className="w-8 h-8 text-[var(--text-secondary)] mb-6" />
+            <div className="text-5xl font-black text-[var(--text-primary)] mb-2">48</div>
+            <div className="uppercase text-[11px] tracking-[0.1em] text-[var(--text-secondary)] font-bold">Active Courses</div>
+          </div>
+
+          {/* Highlight Card */}
+          <div className="bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-accent)] relative overflow-hidden">
+            <div className="absolute inset-0 bg-[var(--accent)] opacity-[0.02]" />
+            <span className="uppercase text-[11px] tracking-[0.1em] text-[var(--accent)] font-bold mb-4 block">
+              Featured Event
+            </span>
+            <h3 className="text-2xl font-black uppercase tracking-tight text-[var(--text-primary)] mb-4">
+              Midnight City Run '26
+            </h3>
+            <div className="flex gap-2">
+              <span className="px-3 py-1 bg-[var(--accent)] text-[#0A0A0A] text-xs font-bold rounded-full">21K</span>
+              <span className="px-3 py-1 bg-[var(--bg-panel-raised)] text-[var(--text-primary)] text-xs font-bold rounded-full border border-[var(--border-subtle)]">10K</span>
+            </div>
+          </div>
+
         </div>
-      </main>
+
+      </div>
     </div>
-  );
+  )
 }
