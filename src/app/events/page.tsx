@@ -132,7 +132,7 @@ export default async function EventsPage() {
                           </div>
                           <div className="flex items-center text-[var(--text-secondary)] font-bold tracking-wide uppercase text-xs">
                             <MapPin className="w-4 h-4 mr-3 text-[var(--accent)]" />
-                            Manila, Philippines (TBD)
+                            {event.location || 'Location TBD'}
                           </div>
                         </div>
 

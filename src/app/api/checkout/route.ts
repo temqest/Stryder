@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key')
 
 export async function POST(req: Request) {
   try {
@@ -8,6 +11,16 @@ export async function POST(req: Request) {
 
     if (!eventId || !categoryId || !name || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    // Fetch event details for the email
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+      include: { event: true }
+    })
+    
+    if (!category) {
+      return NextResponse.json({ error: 'Category not found' }, { status: 404 })
     }
 
     // Upsert user (assuming email is unique)
@@ -31,6 +44,25 @@ export async function POST(req: Request) {
         bibNumber
       }
     })
+
+    // Send confirmation email asynchronously
+    resend.emails.send({
+      from: 'Stryder <onboarding@resend.dev>', // using resend test domain
+      to: [email],
+      subject: `Registration Confirmed: ${category.event.name}`,
+      html: `
+        <h1>You're all set, ${name}!</h1>
+        <p>Thank you for registering for <strong>${category.event.name}</strong>.</p>
+        <p><strong>Distance:</strong> ${category.distance}</p>
+        <p><strong>Bib Number:</strong> ${bibNumber}</p>
+        <p><strong>Shirt Size:</strong> ${shirtSize || 'N/A'}</p>
+        <br/>
+        <p>Your registration is tied to this email. You can view your history later by creating a password with this email address.</p>
+        <p>Good luck on race day!</p>
+      `
+    }).catch(err => {
+      console.error('Failed to send email:', err)
+    });
 
     return NextResponse.json({ success: true, registrationId: registration.id })
   } catch (error) {
