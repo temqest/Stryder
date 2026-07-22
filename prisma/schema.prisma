@@ -748,8 +748,9 @@ model StryderUser {
 }
 
 model Event {
-  id          String     @id @default(uuid())
-  name        String
+  id            String     @id @default(uuid())
+  organizerId   String?
+  name          String
   date          DateTime
   description   String?
   location      String?
@@ -757,9 +758,9 @@ model Event {
   galleryImages String[]
   routeMapData  Json?
   bibDesignData Json?
-  categories  Category[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  categories    Category[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   @@schema("public")
 }

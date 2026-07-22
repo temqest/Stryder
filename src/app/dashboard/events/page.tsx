@@ -2,11 +2,29 @@ import prisma from '@/lib/prisma'
 import Link from 'next/link'
 import { Calendar, Users, ArrowRight, Search, Filter, Activity, Plus } from 'lucide-react'
 import { format, isPast } from 'date-fns'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AllEventsPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const organizer = await prisma.stryderUser.findUnique({ 
+    where: { email: user.email || '' } 
+  })
+
+  if (!organizer || organizer.role !== 'ORGANIZER') {
+    redirect('/login')
+  }
+
   const events = await prisma.event.findMany({
+    where: { organizerId: organizer.id },
     include: {
       categories: {
         include: {

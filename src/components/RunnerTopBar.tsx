@@ -1,0 +1,40 @@
+'use client'
+
+import Link from 'next/link'
+import { Search, Bell, User, LogOut } from 'lucide-react'
+
+export function RunnerTopBar() {
+  return (
+    <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)] flex items-center justify-between px-6">
+      <div className="flex items-center space-x-2 text-[var(--accent)] group">
+        <Link href="/" className="font-black text-xl tracking-tighter uppercase flex items-center space-x-2">
+           <span>Stryder</span>
+        </Link>
+        <span className="text-sm font-bold tracking-wider text-[var(--text-secondary)] uppercase ml-2 hidden sm:block">Runner Portal</span>
+      </div>
+
+      <div className="flex items-center space-x-4 sm:space-x-6">
+        <div className="hidden md:flex items-center bg-[var(--bg-base)] border border-[var(--border-subtle)] rounded-full px-4 py-1.5 focus-within:border-[var(--accent)] transition-colors">
+          <Search className="w-4 h-4 text-[var(--text-secondary)] mr-2" />
+          <input type="text" placeholder="Search races..." className="bg-transparent text-sm focus:outline-none text-[var(--text-primary)] w-48" />
+        </div>
+        <button className="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors relative">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--accent)] rounded-full border border-[var(--bg-panel)] shadow-[0_0_8px_var(--accent)]"></span>
+        </button>
+        <div className="flex items-center pl-2 sm:pl-4 border-l border-[var(--border-subtle)]">
+          <div className="w-8 h-8 rounded-full bg-[var(--bg-base)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)]">
+            <User className="w-4 h-4" />
+          </div>
+          <div className="ml-3 hidden sm:block">
+            <p className="text-xs font-bold text-[var(--text-primary)]">Runner</p>
+            <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">runner@demo.com</p>
+          </div>
+          <Link href="/login" className="ml-4 sm:ml-6 p-2 text-red-500/70 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center" title="Log Out">
+            <LogOut className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+    </header>
+  )
+}

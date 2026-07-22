@@ -2,11 +2,29 @@ import prisma from '@/lib/prisma'
 import Link from 'next/link'
 import { Users, DollarSign, Calendar, ArrowRight, TrendingUp, MoreVertical, Edit2, Copy, Trash2, Search, Filter, Activity, Clock } from 'lucide-react'
 import { format, isPast } from 'date-fns'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardOverview() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const organizer = await prisma.stryderUser.findUnique({ 
+    where: { email: user.email || '' } 
+  })
+
+  if (!organizer || organizer.role !== 'ORGANIZER') {
+    redirect('/login')
+  }
+
   const events = await prisma.event.findMany({
+    where: { organizerId: organizer.id },
     include: {
       categories: {
         include: {
@@ -18,6 +36,13 @@ export default async function DashboardOverview() {
   })
 
   const recentRegistrations = await prisma.registration.findMany({
+    where: {
+      category: {
+        event: {
+          organizerId: organizer.id
+        }
+      }
+    },
     orderBy: { createdAt: 'desc' },
     take: 3,
     include: { user: true, category: { include: { event: true } } }

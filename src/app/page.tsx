@@ -1,107 +1,119 @@
 import Link from 'next/link'
-import { ArrowRight, Flame, MapPin, Trophy } from 'lucide-react'
+import { ArrowRight, Flame, MapPin, Trophy, Activity, Flag } from 'lucide-react'
+import Image from 'next/image'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pt-24 pb-12 px-6 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-base)]">
       
-      {/* Background glow effects */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-[var(--accent)] rounded-full blur-[160px] opacity-[0.03] pointer-events-none" />
+      {/* Hero Section: Full bleed with background image */}
+      <section className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden pt-16">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/racing_hero_bg.png" 
+            alt="Runner sprinting at midnight" 
+            fill 
+            className="object-cover object-center opacity-40 mix-blend-luminosity"
+            priority
+          />
+          {/* Gradients to blend image into background */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-base)] via-transparent to-[var(--bg-base)] opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-base)] via-transparent to-transparent opacity-80" />
+        </div>
 
-      <div className="w-full max-w-7xl mx-auto space-y-6">
-        
-        {/* Bento Grid Top Section: Hero Split */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Hero Content */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
           
-          {/* Main Hero Card (60%) */}
-          <div className="lg:col-span-8 bg-[var(--bg-panel)] rounded-3xl p-10 lg:p-16 border border-[var(--border-subtle)] relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)] rounded-full blur-[100px] opacity-[0.05] group-hover:opacity-10 transition-opacity duration-700" />
+          <div className="md:w-3/5 text-left pt-20">
+            {/* Teko font for huge impact */}
+            <h1 className="font-racing text-7xl md:text-[9rem] font-bold uppercase tracking-tight leading-[0.8] text-[var(--text-primary)] mb-6 drop-shadow-2xl">
+              OUTPACE <br /> 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-white">YOUR LIMITS.</span>
+            </h1>
             
-            <div className="relative z-10">
-              <span className="uppercase text-[11px] tracking-[0.2em] text-[var(--accent)] font-bold mb-6 block">
-                The Ultimate Racing Platform
-              </span>
-              <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tight leading-[0.9] text-[var(--text-primary)] mb-8">
-                Run Your <br /> Best Race.
-              </h1>
-              <p className="text-[var(--text-secondary)] text-lg max-w-md mb-10 leading-relaxed">
-                Discover local marathons, track your performance, and secure your spot at the starting line. Built for runners who demand more.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link 
-                  href="/events"
-                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-dim)] text-[#0A0A0A] font-bold transition-all"
-                >
+            <p className="text-[var(--text-secondary)] text-lg md:text-xl max-w-lg mb-10 leading-relaxed font-light">
+              Discover local marathons, track your performance, and secure your spot at the starting line. Built for runners who demand more.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link 
+                href="/events"
+                className="group relative inline-flex items-center justify-center px-10 py-5 bg-[var(--accent)] text-[#0A0A0A] font-black uppercase tracking-widest overflow-hidden skew-x-[-10deg] hover:bg-white transition-colors duration-300"
+              >
+                <div className="absolute inset-0 w-full h-full bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 ease-in-out" />
+                <span className="skew-x-[10deg] flex items-center">
                   Find a Race
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-                <Link 
-                  href="/dashboard"
-                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-transparent border border-[var(--border-subtle)] hover:border-[var(--text-primary)] text-[var(--text-primary)] font-bold transition-all"
-                >
-                  Organizer Login
-                </Link>
-              </div>
+                  <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </Link>
+              
+              <Link 
+                href="/login"
+                className="group inline-flex items-center justify-center px-10 py-5 bg-transparent border-2 border-[var(--border-subtle)] text-[var(--text-primary)] font-black uppercase tracking-widest skew-x-[-10deg] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors duration-300"
+              >
+                <span className="skew-x-[10deg]">Organizer Login</span>
+              </Link>
             </div>
           </div>
+          
+          {/* Floating stat card */}
+          <div className="hidden md:flex md:w-2/5 justify-end">
+             <div className="bg-black/40 backdrop-blur-xl border border-[var(--border-subtle)] rounded-2xl p-6 w-72 transform rotate-2 hover:rotate-0 hover:scale-105 transition-all duration-500 shadow-2xl">
+                <div className="flex justify-between items-start mb-4">
+                  <Flame className="w-8 h-8 text-[var(--accent)]" />
+                  <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Live Stat</span>
+                </div>
+                <div className="font-racing text-5xl text-white leading-none mb-1">12,492</div>
+                <div className="text-sm text-[var(--text-secondary)] uppercase tracking-widest font-bold">Active Runners</div>
+                
+                <div className="mt-6 pt-4 border-t border-[var(--border-subtle)]">
+                   <div className="flex items-center justify-between text-xs">
+                     <span className="text-[var(--text-secondary)]">Last 24h</span>
+                     <span className="text-green-400 font-bold">+342 Registrations</span>
+                   </div>
+                </div>
+             </div>
+          </div>
+        </div>
+      </section>
 
-          {/* Secondary Hero Card (40%) */}
-          <div className="lg:col-span-4 bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-subtle)] flex flex-col justify-between relative overflow-hidden">
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-full bg-[var(--bg-panel-raised)] flex items-center justify-center mb-6 border border-[var(--border-subtle)]">
-                <Flame className="w-6 h-6 text-[var(--accent)]" />
+      {/* Feature Section - Asymmetrical */}
+      <section className="py-24 px-6 relative w-full max-w-7xl mx-auto overflow-visible">
+         <div className="absolute top-1/2 left-0 w-96 h-96 bg-[var(--accent)] rounded-full blur-[150px] opacity-[0.03] pointer-events-none" />
+         
+         <div className="flex flex-col md:flex-row gap-16 items-center">
+            
+            <div className="w-full md:w-1/2 relative group">
+              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-transparent opacity-20 blur-2xl group-hover:opacity-40 transition-opacity duration-700" />
+              <div className="relative bg-[var(--bg-panel)] border border-[var(--border-subtle)] rounded-3xl p-10 md:p-14 overflow-hidden transform group-hover:-translate-y-2 transition-transform duration-500">
+                 <MapPin className="w-12 h-12 text-[var(--accent)] mb-8" />
+                 <h2 className="font-racing text-5xl uppercase leading-none mb-4">Explore <br/> Every Course</h2>
+                 <p className="text-[var(--text-secondary)] text-lg">Detailed route maps, elevation profiles, and real-time runner heatmaps. Know what you're up against before you even tie your shoes.</p>
               </div>
-              <h3 className="text-3xl font-black uppercase tracking-tight text-[var(--text-primary)] mb-2">Live Heatmaps</h3>
-              <p className="text-[var(--text-secondary)]">Track real-time runner density and course difficulty before you register.</p>
+            </div>
+
+            <div className="w-full md:w-1/2 space-y-8">
+               <div className="bg-[var(--bg-panel)] border border-[var(--border-subtle)] rounded-3xl p-8 transform translate-x-0 md:translate-x-8 hover:-translate-x-2 transition-transform duration-500">
+                  <div className="flex items-center mb-4">
+                     <Trophy className="w-8 h-8 text-white mr-4" />
+                     <h3 className="font-racing text-3xl uppercase tracking-wider">Compete & Conquer</h3>
+                  </div>
+                  <p className="text-[var(--text-secondary)]">Secure your bib, track your official times, and climb the leaderboards.</p>
+               </div>
+
+               <div className="bg-[var(--bg-panel)] border border-[var(--border-subtle)] rounded-3xl p-8 transform translate-x-0 md:-translate-x-4 hover:translate-x-2 transition-transform duration-500">
+                  <div className="flex items-center mb-4">
+                     <Flag className="w-8 h-8 text-white mr-4" />
+                     <h3 className="font-racing text-3xl uppercase tracking-wider">Host the Best</h3>
+                  </div>
+                  <p className="text-[var(--text-secondary)]">Organizers get full control over ticketing, categories, and live race-day monitoring.</p>
+               </div>
             </div>
             
-            {/* Decorative Map Graphic */}
-            <div className="mt-8 h-48 w-full bg-[var(--bg-panel-raised)] rounded-2xl border border-[var(--border-subtle)] relative overflow-hidden">
-               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(var(--text-secondary) 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
-               <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-                 <path d="M-10,120 Q50,150 100,80 T250,90 T350,40" fill="none" stroke="var(--accent)" strokeWidth="3" strokeDasharray="6 6" className="opacity-80" />
-               </svg>
-               <div className="absolute top-[80px] left-[100px] w-3 h-3 bg-[var(--accent)] rounded-full shadow-[0_0_15px_var(--accent)]" />
-            </div>
-          </div>
-        </div>
+         </div>
+      </section>
 
-        {/* Bento Grid Bottom Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          {/* Stat Card 1 */}
-          <div className="bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-subtle)] hover:border-[var(--border-accent)] transition-all">
-            <Trophy className="w-8 h-8 text-[var(--text-secondary)] mb-6" />
-            <div className="text-5xl font-black text-[var(--text-primary)] mb-2">12.4k</div>
-            <div className="uppercase text-[11px] tracking-[0.1em] text-[var(--text-secondary)] font-bold">Registered Runners</div>
-          </div>
-
-          {/* Stat Card 2 */}
-          <div className="bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-subtle)] hover:border-[var(--border-accent)] transition-all">
-            <MapPin className="w-8 h-8 text-[var(--text-secondary)] mb-6" />
-            <div className="text-5xl font-black text-[var(--text-primary)] mb-2">48</div>
-            <div className="uppercase text-[11px] tracking-[0.1em] text-[var(--text-secondary)] font-bold">Active Courses</div>
-          </div>
-
-          {/* Highlight Card */}
-          <div className="bg-[var(--bg-panel)] rounded-3xl p-8 border border-[var(--border-accent)] relative overflow-hidden">
-            <div className="absolute inset-0 bg-[var(--accent)] opacity-[0.02]" />
-            <span className="uppercase text-[11px] tracking-[0.1em] text-[var(--accent)] font-bold mb-4 block">
-              Featured Event
-            </span>
-            <h3 className="text-2xl font-black uppercase tracking-tight text-[var(--text-primary)] mb-4">
-              Midnight City Run '26
-            </h3>
-            <div className="flex gap-2">
-              <span className="px-3 py-1 bg-[var(--accent)] text-[#0A0A0A] text-xs font-bold rounded-full">21K</span>
-              <span className="px-3 py-1 bg-[var(--bg-panel-raised)] text-[var(--text-primary)] text-xs font-bold rounded-full border border-[var(--border-subtle)]">10K</span>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
     </div>
   )
 }

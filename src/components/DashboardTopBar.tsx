@@ -34,7 +34,7 @@ export function DashboardTopBar() {
             <p className="text-xs font-bold text-[var(--text-primary)]">Admin</p>
             <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">demo@admin.com</p>
           </div>
-          <Link href="/login" className="ml-4 sm:ml-6 p-2 text-red-500/70 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center" title="Log Out">
+          <Link href="/auth/logout" className="ml-4 sm:ml-6 p-2 text-red-500/70 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center" title="Log Out">
             <LogOut className="w-4 h-4" />
           </Link>
         </div>

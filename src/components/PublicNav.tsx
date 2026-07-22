@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 export function PublicNav() {
   const pathname = usePathname()
 
-  if (pathname?.startsWith('/dashboard')) {
+  if (pathname?.startsWith('/dashboard') || pathname?.startsWith('/runner')) {
     return null
   }
 

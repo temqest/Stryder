@@ -3,21 +3,37 @@ import { OrganizerSidebar } from '@/components/OrganizerSidebar'
 import { CreateEventModal } from '@/components/CreateEventModal'
 import prisma from '@/lib/prisma'
 import { Suspense } from 'react'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const organizer = await prisma.stryderUser.findUnique({ 
+    where: { email: user.email || '' } 
+  })
+  
+  if (!organizer || organizer.role !== 'ORGANIZER') {
+    redirect('/login')
+  }
+
   const events = await prisma.event.findMany({
+    where: { organizerId: organizer.id },
     select: { id: true, name: true },
     orderBy: { date: 'asc' }
   })
 
-  const session = { user: { id: 'admin-123', email: 'admin@stryder.com' } } // Mock session
-  const isOwner = true // (session.user.id === 'admin-123')
-  const teamMember = await prisma.teamMember.findFirst({ where: { email: session.user.email, status: 'ACTIVE' } })
-  const role = isOwner ? 'OWNER' : teamMember?.role || 'NONE'
+  // Since this is a single organizer portal, role is OWNER for now
+  const role = 'OWNER'
 
   return (
     <div className="flex flex-col h-screen bg-[var(--bg-base)] overflow-hidden">

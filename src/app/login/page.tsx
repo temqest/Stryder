@@ -1,16 +1,21 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { Activity, ArrowRight } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { Activity, ArrowRight, User, Building2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
+  const [role, setRole] = useState<'RUNNER' | 'ORGANIZER'>('RUNNER')
+  const supabase = createClient()
+
   const handleGoogleLogin = async () => {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const redirectPath = role === 'RUNNER' ? '/runner' : '/dashboard'
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${appUrl}/dashboard`
+        redirectTo: `${appUrl}/auth/callback?next=${redirectPath}`
       }
     })
   }
@@ -35,6 +40,26 @@ export default function LoginPage() {
         </div>
 
         <form className="space-y-5">
+          <div className="grid grid-cols-2 gap-4 mb-2">
+            <button
+              type="button"
+              onClick={() => setRole('RUNNER')}
+              className={`p-4 rounded-2xl border ${role === 'RUNNER' ? 'bg-[var(--bg-panel-raised)] border-[var(--accent)] shadow-[0_0_15px_rgba(212,255,0,0.05)]' : 'bg-[var(--bg-base)] border-[var(--border-subtle)] hover:border-[var(--text-secondary)]'} transition-all flex flex-col items-center justify-center group`}
+            >
+              <User className={`w-6 h-6 mb-2 ${role === 'RUNNER' ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors'}`} />
+              <span className={`text-xs font-bold uppercase tracking-wider ${role === 'RUNNER' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors'}`}>Runner</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole('ORGANIZER')}
+              className={`p-4 rounded-2xl border ${role === 'ORGANIZER' ? 'bg-[var(--bg-panel-raised)] border-[var(--accent)] shadow-[0_0_15px_rgba(212,255,0,0.05)]' : 'bg-[var(--bg-base)] border-[var(--border-subtle)] hover:border-[var(--text-secondary)]'} transition-all flex flex-col items-center justify-center group`}
+            >
+              <Building2 className={`w-6 h-6 mb-2 ${role === 'ORGANIZER' ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors'}`} />
+              <span className={`text-xs font-bold uppercase tracking-wider ${role === 'ORGANIZER' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors'}`}>Organizer</span>
+            </button>
+          </div>
+          <input type="hidden" name="role" value={role} />
+
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Email Address</label>
             <input 

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Calendar, MapPin, ArrowRight, ArrowLeft, Clock, Shield } from 'lucide-react'
 import { format } from 'date-fns'
 import EventRouteMap from '@/components/EventRouteMap'
-
+import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +21,25 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
 
   if (!event) return notFound()
 
+  // Actual session check
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  let runner = null
+  if (user && user.email) {
+    runner = await prisma.stryderUser.findUnique({ where: { email: user.email } })
+  }
+
+  const backLink = runner ? '/runner/discover' : '/events'
+  
+  let isRegistered = false
+  if (runner) {
+    const reg = await prisma.registration.findFirst({
+      where: { userId: runner.id, category: { eventId: id }, status: { in: ['CONFIRMED', 'HELD'] } }
+    })
+    if (reg) isRegistered = true
+  }
+
   return (
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* Hero Banner */}
@@ -32,7 +51,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
         {/* Back Button */}
         <div className="absolute top-8 left-0 w-full z-30 flex justify-center">
           <div className="w-full max-w-7xl px-6">
-            <Link href="/events" className="inline-flex items-center text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors text-sm font-bold uppercase tracking-wider">
+            <Link href={backLink} className="inline-flex items-center text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors text-sm font-bold uppercase tracking-wider">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Events
             </Link>
@@ -158,7 +177,11 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
                 Spots Remaining: {spotsRemaining}
               </div>
               
-              {spotsRemaining > 0 ? (
+              {isRegistered ? (
+                <div className="w-full py-4 rounded-full font-black uppercase tracking-wider text-center flex items-center justify-center relative z-10 bg-[var(--bg-panel-raised)] text-[var(--accent)] border border-[var(--accent)]/30">
+                  Already Registered
+                </div>
+              ) : spotsRemaining > 0 ? (
                 <Link 
                   href={`/events/${event.id}/register?category=${category.id}`}
                   className="w-full py-4 rounded-full font-black uppercase tracking-wider text-center transition-transform flex items-center justify-center relative z-10 bg-[var(--accent)] text-[#0A0A0A] hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(212,255,0,0.15)]"

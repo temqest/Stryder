@@ -10,10 +10,11 @@ export default function SignupPage() {
 
   const handleGoogleLogin = async () => {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const redirectPath = role === 'RUNNER' ? '/runner' : '/dashboard'
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${appUrl}/dashboard`
+        redirectTo: `${appUrl}${redirectPath}`
       }
     })
   }
