@@ -6,6 +6,8 @@ import { format } from 'date-fns'
 import { MapPin, Calendar, ArrowLeft, Ticket } from 'lucide-react'
 import TicketActions from './TicketActions'
 
+export const dynamic = 'force-dynamic'
+
 export default async function TicketPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   
