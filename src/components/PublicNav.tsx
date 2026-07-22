@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Activity } from 'lucide-react'
+
 import { usePathname } from 'next/navigation'
 
 export function PublicNav() {
@@ -14,10 +14,7 @@ export function PublicNav() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-[var(--bg-base)]/80 backdrop-blur-md border-b border-[var(--border-subtle)]">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2 text-[var(--text-primary)] group">
-          <div className="w-8 h-8 rounded-full bg-[var(--bg-panel-raised)] border border-[var(--border-subtle)] flex items-center justify-center group-hover:border-[var(--accent)] transition-colors">
-            <Activity className="w-4 h-4 text-[var(--accent)]" />
-          </div>
+        <Link href="/" className="flex items-center space-x-2 text-[var(--accent)] group">
           <span className="font-black text-xl tracking-tighter uppercase">Stryder</span>
         </Link>
         <div className="flex items-center space-x-6 sm:space-x-8">

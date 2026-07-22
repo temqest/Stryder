@@ -5,16 +5,18 @@ import { QrCode, X } from 'lucide-react'
 import QRScanner from '@/components/QRScanner'
 
 export function ScanQRModalButton({ 
-  className = "flex items-center px-6 py-3 bg-[var(--accent)] text-[#0A0A0A] rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[var(--accent-dim)] transition-all shadow-[0_0_15px_var(--border-accent)]"
+  className = "flex items-center px-6 py-3 bg-[var(--accent)] text-[#0A0A0A] rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[var(--accent-dim)] transition-all shadow-[0_0_15px_var(--border-accent)]",
+  mode = 'check-in'
 }: { 
-  className?: string 
+  className?: string,
+  mode?: 'check-in' | 'finish-line'
 }) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
       <button onClick={() => setIsOpen(true)} className={className}>
-        <QrCode className="w-5 h-5 mr-2" /> Scan QR
+        <QrCode className="w-5 h-5 mr-2" /> {mode === 'finish-line' ? 'Finish Line' : 'Scan QR'}
       </button>
 
       {isOpen && (
@@ -26,7 +28,7 @@ export function ScanQRModalButton({
             >
               <X className="w-8 h-8" />
             </button>
-            <QRScanner />
+            <QRScanner mode={mode} />
           </div>
         </div>
       )}

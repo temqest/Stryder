@@ -17,12 +17,18 @@ export async function POST(req: Request) {
       create: { name, email, emergencyContact, shirtSize }
     })
 
+    const existingCount = await prisma.registration.count({
+      where: { category: { eventId } }
+    })
+    const bibNumber = String(1000 + existingCount + 1)
+
     // Create the registration
     const registration = await prisma.registration.create({
       data: {
         userId: user.id,
         categoryId: categoryId,
-        status: 'CONFIRMED'
+        status: 'CONFIRMED',
+        bibNumber
       }
     })
 

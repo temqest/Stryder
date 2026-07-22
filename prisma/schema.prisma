@@ -739,6 +739,8 @@ model StryderUser {
   emergencyContact String?
   shirtSize        String?
   registrations    Registration[]
+  ownedTeamMembers TeamMember[]   @relation("TeamOwner")
+  teamMemberships  TeamMember[]   @relation("TeamMemberUser")
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 
@@ -802,5 +804,35 @@ model RaceResult {
   timestamp      DateTime
   createdAt      DateTime     @default(now())
 
+  @@schema("public")
+}
+
+enum StaffRole {
+  MANAGER
+  SCANNER
+
+  @@schema("public")
+}
+
+enum InviteStatus {
+  PENDING
+  ACTIVE
+
+  @@schema("public")
+}
+
+model TeamMember {
+  id        String       @id @default(uuid())
+  ownerId   String
+  owner     StryderUser  @relation("TeamOwner", fields: [ownerId], references: [id])
+  email     String
+  userId    String?
+  user      StryderUser? @relation("TeamMemberUser", fields: [userId], references: [id])
+  role      StaffRole    @default(SCANNER)
+  status    InviteStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@unique([ownerId, email])
   @@schema("public")
 }

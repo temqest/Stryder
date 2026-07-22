@@ -1,15 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { Activity, Search, Bell, Settings, User } from 'lucide-react'
+import { Search, Bell, Settings, User, LogOut } from 'lucide-react'
 
 export function DashboardTopBar() {
   return (
     <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)] flex items-center justify-between px-6">
-      <div className="flex items-center space-x-2 text-[var(--text-primary)] group">
-        <div className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center">
-          <Activity className="w-4 h-4 text-[#0A0A0A]" />
-        </div>
+      <div className="flex items-center space-x-2 text-[var(--accent)] group">
         <span className="font-black text-xl tracking-tighter uppercase">Stryder</span>
         <span className="text-sm font-bold tracking-wider text-[var(--text-secondary)] uppercase ml-2 hidden sm:block">Dashboard</span>
       </div>
@@ -37,6 +34,9 @@ export function DashboardTopBar() {
             <p className="text-xs font-bold text-[var(--text-primary)]">Admin</p>
             <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">demo@admin.com</p>
           </div>
+          <Link href="/login" className="ml-4 sm:ml-6 p-2 text-red-500/70 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center" title="Log Out">
+            <LogOut className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </header>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import QRCode from 'react-qr-code'
 import { format } from 'date-fns'
 import { MapPin, Calendar, ArrowLeft, Ticket } from 'lucide-react'
+import TicketActions from './TicketActions'
 
 export default async function TicketPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -51,7 +52,7 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* QR Code Section */}
-          <div className="p-8 flex flex-col items-center justify-center bg-white">
+          <div className="p-8 flex flex-col items-center justify-center bg-white ticket-qr-code">
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
               <QRCode 
                 value={registration.id}
@@ -60,7 +61,7 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
                 className="w-full h-auto"
               />
             </div>
-            <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 text-center">
+            <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 text-center no-print">
               Scan at Entrance
             </p>
           </div>
@@ -92,9 +93,7 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
 
         </div>
         
-        <p className="text-center text-[10px] uppercase tracking-wider text-[var(--text-secondary)] font-bold mt-8">
-          Save this QR code to your phone or print it.
-        </p>
+        <TicketActions />
       </div>
     </div>
   )

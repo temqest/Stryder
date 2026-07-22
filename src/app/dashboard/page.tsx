@@ -17,6 +17,12 @@ export default async function DashboardOverview() {
     orderBy: { date: 'asc' }
   })
 
+  const recentRegistrations = await prisma.registration.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 3,
+    include: { user: true, category: { include: { event: true } } }
+  })
+
   let totalRegistrations = 0
   let totalRevenue = 0
   let activeEvents = 0
@@ -73,7 +79,7 @@ export default async function DashboardOverview() {
             <div>
               <div className="text-4xl md:text-5xl font-black mb-1">₱{totalRevenue.toLocaleString()}</div>
               <div className="text-xs text-[var(--text-secondary)] font-medium flex items-center">
-                 <span className="text-[var(--accent)] mr-1">+12%</span> vs last month
+                 Overall earnings
               </div>
             </div>
           </div>
@@ -86,7 +92,7 @@ export default async function DashboardOverview() {
             <div>
               <div className="text-4xl md:text-5xl font-black mb-1">{totalRegistrations.toLocaleString()}</div>
               <div className="text-xs text-[var(--text-secondary)] font-medium flex items-center">
-                 <span className="text-green-500 mr-1">+5</span> new this week
+                 Across all events
               </div>
             </div>
           </div>
@@ -99,7 +105,7 @@ export default async function DashboardOverview() {
             <div>
               <div className="text-4xl md:text-5xl font-black mb-1">{activeEvents}</div>
               <div className="text-xs text-[var(--text-secondary)] font-medium flex items-center">
-                 2 events awaiting review
+                 Currently running
               </div>
             </div>
           </div>
@@ -185,36 +191,22 @@ export default async function DashboardOverview() {
                 </h3>
                 
                 <div className="space-y-6">
-                  {/* Dummy activity data */}
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 rounded-full bg-[var(--bg-base)] flex items-center justify-center mr-3 shrink-0 border border-[var(--border-subtle)]">
-                      <Users className="w-3 h-3 text-[var(--text-secondary)]" />
+                  {recentRegistrations.map((reg: any) => (
+                    <div key={reg.id} className="flex items-start">
+                      <div className="w-8 h-8 rounded-full bg-[var(--bg-base)] flex items-center justify-center mr-3 shrink-0 border border-[var(--border-subtle)]">
+                        <Users className="w-3 h-3 text-[var(--text-secondary)]" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-[var(--text-primary)]"><span className="font-bold">{reg.user.name}</span> registered for <span className="text-[var(--accent)]">{reg.category.event.name}</span></p>
+                        <p className="text-xs text-[var(--text-secondary)] mt-1 flex items-center"><Clock className="w-3 h-3 mr-1" /> {format(new Date(reg.createdAt), 'MMM do, h:mm a')}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-[var(--text-primary)]"><span className="font-bold">Juan Dela Cruz</span> registered for <span className="text-[var(--accent)]">Stryder Midnight Run 10K</span></p>
-                      <p className="text-xs text-[var(--text-secondary)] mt-1 flex items-center"><Clock className="w-3 h-3 mr-1" /> 2 mins ago</p>
+                  ))}
+                  {recentRegistrations.length === 0 && (
+                    <div className="text-sm text-[var(--text-secondary)] italic">
+                      No recent activity.
                     </div>
-                  </div>
-
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 rounded-full bg-[var(--bg-base)] flex items-center justify-center mr-3 shrink-0 border border-[var(--border-subtle)]">
-                      <DollarSign className="w-3 h-3 text-[var(--text-secondary)]" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-[var(--text-primary)]">Payment of <span className="font-bold text-green-500">₱1,500</span> received for <span className="text-[var(--accent)]">City Marathon</span></p>
-                      <p className="text-xs text-[var(--text-secondary)] mt-1 flex items-center"><Clock className="w-3 h-3 mr-1" /> 45 mins ago</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 rounded-full bg-[var(--bg-base)] flex items-center justify-center mr-3 shrink-0 border border-[var(--border-subtle)]">
-                      <Edit2 className="w-3 h-3 text-[var(--text-secondary)]" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-[var(--text-primary)]">You updated the route map for <span className="text-[var(--accent)]">Trail Blaze 2026</span></p>
-                      <p className="text-xs text-[var(--text-secondary)] mt-1 flex items-center"><Clock className="w-3 h-3 mr-1" /> 2 hours ago</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
                 
                 <button className="w-full mt-6 py-2 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors border border-[var(--border-subtle)] rounded-lg">

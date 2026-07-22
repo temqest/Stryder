@@ -145,27 +145,44 @@ export async function checkInParticipant(registrationId: string) {
       return { success: false, error: 'Registration not found' }
     }
 
-    if (registration.checkedInAt) {
-      return { success: false, error: 'Participant is already checked in', name: registration.user.name }
-    }
-
-    await prisma.registration.update({
-      where: { id: registrationId },
-      data: { checkedInAt: new Date() }
-    })
-
-    revalidatePath('/dashboard/scanner')
-    revalidatePath(`/dashboard/events/${registration.category.eventId}`)
-
-    return { 
-      success: true, 
-      name: registration.user.name, 
-      category: registration.category.distance,
-      event: registration.category.event.name
+    if (!registration.checkedInAt) {
+      await prisma.registration.update({
+        where: { id: registrationId },
+        data: { checkedInAt: new Date() }
+      })
+      revalidatePath('/dashboard/scanner')
+      revalidatePath(`/dashboard/events/${registration.category.eventId}`)
+      return { 
+        success: true, 
+        message: 'Check-In Successful',
+        name: registration.user.name, 
+        category: registration.category.distance,
+        event: registration.category.event.name,
+        action: 'CHECK_IN'
+      }
+    } else {
+      const existingResult = await prisma.raceResult.findFirst({
+        where: { registrationId }
+      })
+      if (existingResult) {
+        return { success: false, error: 'Participant has already finished', name: registration.user.name }
+      }
+      await prisma.raceResult.create({
+        data: { registrationId, timestamp: new Date() }
+      })
+      revalidatePath(`/dashboard/events/${registration.category.eventId}/race`)
+      return { 
+        success: true, 
+        message: 'Finish Time Recorded',
+        name: registration.user.name, 
+        category: registration.category.distance,
+        event: registration.category.event.name,
+        action: 'FINISH'
+      }
     }
   } catch (error) {
-    console.error('Error checking in:', error)
-    return { success: false, error: 'Failed to process check-in' }
+    console.error('Error in smart scan:', error)
+    return { success: false, error: 'Failed to process scan' }
   }
 }
 
@@ -181,4 +198,104 @@ export async function saveBibDesign(eventId: string, designData: any) {
     console.error('Error saving bib design:', error)
     return { success: false, error: 'Failed to save bib design' }
   }
+}
+
+export async function recordRaceFinish(registrationId: string) {
+  return checkInParticipant(registrationId);
+}
+
+export async function recordRaceFinishByBib(eventId: string, bibNumber: string) {
+  try {
+    const registration = await prisma.registration.findFirst({
+      where: { 
+        bibNumber,
+        category: { eventId }
+      },
+      include: { user: true, category: { include: { event: true } } }
+    })
+
+    if (!registration) {
+      return { success: false, error: 'Bib number not found for this event' }
+    }
+
+    if (!registration.checkedInAt) {
+      await prisma.registration.update({
+        where: { id: registration.id },
+        data: { checkedInAt: new Date() }
+      })
+      revalidatePath('/dashboard/scanner')
+      revalidatePath(`/dashboard/events/${eventId}`)
+      return { 
+        success: true, 
+        message: 'Check-In Successful',
+        name: registration.user.name, 
+        category: registration.category.distance,
+        event: registration.category.event.name,
+        action: 'CHECK_IN'
+      }
+    } else {
+      const existingResult = await prisma.raceResult.findFirst({
+        where: { registrationId: registration.id }
+      })
+      if (existingResult) {
+        return { success: false, error: 'Participant has already finished', name: registration.user.name }
+      }
+      await prisma.raceResult.create({
+        data: { registrationId: registration.id, timestamp: new Date() }
+      })
+      revalidatePath(`/dashboard/events/${eventId}/race`)
+      return { 
+        success: true, 
+        message: 'Finish Time Recorded',
+        name: registration.user.name, 
+        category: registration.category.distance,
+        event: registration.category.event.name,
+        action: 'FINISH'
+      }
+    }
+  } catch (error) {
+    console.error('Error recording finish by bib:', error)
+    return { success: false, error: 'Failed to process bib entry' }
+  }
+}
+
+export async function deleteEvent(eventId: string) {
+  try {
+    const categories = await prisma.category.findMany({
+      where: { eventId },
+      select: { id: true }
+    })
+    const categoryIds = categories.map(c => c.id)
+
+    const registrations = await prisma.registration.findMany({
+      where: { categoryId: { in: categoryIds } },
+      select: { id: true }
+    })
+    const registrationIds = registrations.map(r => r.id)
+
+    await prisma.$transaction([
+      prisma.raceResult.deleteMany({
+        where: { registrationId: { in: registrationIds } }
+      }),
+      prisma.registration.deleteMany({
+        where: { id: { in: registrationIds } }
+      }),
+      prisma.category.deleteMany({
+        where: { id: { in: categoryIds } }
+      }),
+      prisma.event.delete({
+        where: { id: eventId }
+      })
+    ])
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error deleting event:', error)
+    return { success: false, error: 'Failed to delete event' }
+  }
+}
+
+export async function finishEventDeletion() {
+  revalidatePath('/dashboard', 'layout')
+  redirect('/dashboard/events')
 }

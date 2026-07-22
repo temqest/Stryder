@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
-import { checkInParticipant } from '@/app/dashboard/actions'
+import { checkInParticipant, recordRaceFinish } from '@/app/dashboard/actions'
 import { CheckCircle2, Loader2, XCircle, ScanLine } from 'lucide-react'
 
-export default function QRScanner() {
+export default function QRScanner({ mode = 'check-in' }: { mode?: 'check-in' | 'finish-line' }) {
   const [isActive, setIsActive] = useState(false)
   const [scanResult, setScanResult] = useState<{ success: boolean, name?: string, error?: string, category?: string, event?: string } | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -35,7 +35,10 @@ export default function QRScanner() {
           // Pause the scanner to prevent multiple rapid scans of the same code
           scanner.pause(true)
           
-          const result = await checkInParticipant(decodedText)
+          const result = mode === 'check-in' 
+            ? await checkInParticipant(decodedText)
+            : await recordRaceFinish(decodedText);
+            
           setScanResult(result)
           
           // Clear result and resume scanning after 3 seconds

@@ -12,11 +12,13 @@ import {
   Ticket, 
   Activity,
   Menu,
-  X
+  X,
+  Wallet,
+  LogOut
 } from 'lucide-react'
 import { useState } from 'react'
 
-export function OrganizerSidebar({ events }: { events: { id: string; name: string }[] }) {
+export function OrganizerSidebar({ events, role = 'OWNER' }: { events: { id: string; name: string }[], role?: string }) {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -24,12 +26,16 @@ export function OrganizerSidebar({ events }: { events: { id: string; name: strin
   const eventIdMatch = pathname?.match(/\/dashboard\/events\/([^/]+)/)
   const eventId = eventIdMatch ? eventIdMatch[1] : null
 
-  const mainLinks = [
+  const allMainLinks = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'All Events', href: '/dashboard/events', icon: Calendar },
+    { name: 'Wallet', href: '/dashboard/wallet', icon: Wallet },
     { name: 'Team & Staff', href: '/dashboard/team', icon: Users },
     { name: 'Scanner', href: '/dashboard/scanner', icon: Activity },
   ]
+  const mainLinks = role === 'SCANNER' 
+    ? allMainLinks.filter(l => l.name === 'Scanner')
+    : allMainLinks;
 
   const eventLinks = eventId ? [
     { name: 'Event Info', href: `/dashboard/events/${eventId}`, icon: Settings },
@@ -135,6 +141,18 @@ export function OrganizerSidebar({ events }: { events: { id: string; name: strin
                  <div className="text-xs text-[var(--text-secondary)] px-3 py-2">No events found.</div>
               )}
             </div>
+          </div>
+          <div className="flex-1" />
+          
+          <div className="mt-8 pt-4 border-t border-[var(--border-subtle)] px-2 pb-4">
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center px-3 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors text-red-500 hover:bg-red-500/10"
+            >
+              <LogOut className="w-4 h-4 mr-3 shrink-0" />
+              Log Out
+            </Link>
           </div>
           
         </div>

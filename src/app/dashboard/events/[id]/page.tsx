@@ -5,6 +5,7 @@ import { ArrowLeft, Users, QrCode, Download, Search } from 'lucide-react'
 import { format } from 'date-fns'
 import { EventDetailsForm } from '@/components/EventDetailsForm'
 import { ScanQRModalButton } from '@/components/ScanQRModalButton'
+import { DeleteEventModal } from '@/components/DeleteEventModal'
 
 export const dynamic = 'force-dynamic'
 
@@ -62,6 +63,7 @@ export default async function EventManagementPage({ params }: { params: Promise<
           </div>
           
           <div className="flex gap-4">
+            <DeleteEventModal event={event as any} />
             <button className="px-6 py-3 rounded-full bg-[var(--bg-panel-raised)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-bold uppercase tracking-wider text-xs hover:border-[var(--text-primary)] transition-colors flex items-center">
               <Download className="w-4 h-4 mr-2" /> Export CSV
             </button>
