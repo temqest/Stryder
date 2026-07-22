@@ -49,11 +49,11 @@ export function OrganizerSidebar({ events }: { events: { id: string; name: strin
 
       {/* Sidebar Container */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-64 bg-[var(--bg-panel)] border-r border-[var(--border-subtle)] transform transition-transform duration-300 ease-in-out pt-20
-        md:translate-x-0 md:static md:h-screen md:sticky md:top-0 md:pt-24
+        fixed inset-y-0 left-0 z-40 w-64 bg-[var(--bg-panel)] border-r border-[var(--border-subtle)] transform transition-transform duration-300 ease-in-out pt-16
+        md:translate-x-0 md:static md:h-full md:pt-0
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="h-full overflow-y-auto p-4 flex flex-col">
+        <div className="h-full overflow-y-auto p-4 flex flex-col custom-scrollbar">
           
           <div className="mb-8 px-2">
             <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] mb-4">
