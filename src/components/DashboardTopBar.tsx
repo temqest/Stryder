@@ -2,8 +2,17 @@
 
 import Link from 'next/link'
 import { Search, Bell, Settings, User, LogOut } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 export function DashboardTopBar() {
+  const router = useRouter()
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
   return (
     <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)] flex items-center justify-between px-6">
       <div className="flex items-center space-x-2 text-[var(--accent)] group">
@@ -34,9 +43,9 @@ export function DashboardTopBar() {
             <p className="text-xs font-bold text-[var(--text-primary)]">Admin</p>
             <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">demo@admin.com</p>
           </div>
-          <Link href="/auth/logout" className="ml-4 sm:ml-6 p-2 text-red-500/70 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center" title="Log Out">
+          <button onClick={handleLogout} className="ml-4 sm:ml-6 p-2 text-red-500/70 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center" title="Log Out">
             <LogOut className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
       </div>
     </header>

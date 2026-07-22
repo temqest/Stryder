@@ -17,10 +17,21 @@ import {
   LogOut
 } from 'lucide-react'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 export function OrganizerSidebar({ events, role = 'OWNER' }: { events: { id: string; name: string }[], role?: string }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    setIsOpen(false)
+    router.push('/login')
+    router.refresh()
+  }
 
   // Extract the event ID if we are deep inside an event route
   const eventIdMatch = pathname?.match(/\/dashboard\/events\/([^/]+)/)
@@ -145,14 +156,13 @@ export function OrganizerSidebar({ events, role = 'OWNER' }: { events: { id: str
           <div className="flex-1" />
           
           <div className="mt-8 pt-4 border-t border-[var(--border-subtle)] px-2 pb-4">
-            <Link
-              href="/auth/logout"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center px-3 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors text-red-500 hover:bg-red-500/10"
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center px-3 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors text-red-500 hover:bg-red-500/10"
             >
               <LogOut className="w-4 h-4 mr-3 shrink-0" />
               Log Out
-            </Link>
+            </button>
           </div>
           
         </div>
