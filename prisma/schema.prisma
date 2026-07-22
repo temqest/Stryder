@@ -754,6 +754,7 @@ model Event {
   bannerImage   String?
   galleryImages String[]
   routeMapData  Json?
+  bibDesignData Json?
   categories  Category[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -782,6 +783,7 @@ model Registration {
   categoryId      String
   category        Category           @relation(fields: [categoryId], references: [id])
   status          RegistrationStatus @default(HELD)
+  checkedInAt     DateTime?
   expiresAt       DateTime?
   paymentIntentId String?            @unique
   qrCodeUrl       String?

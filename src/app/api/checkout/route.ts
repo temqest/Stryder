@@ -17,13 +17,12 @@ export async function POST(req: Request) {
       create: { name, email, emergencyContact, shirtSize }
     })
 
-    // Create the registration (mocking a successful payment by setting CONFIRMED immediately)
+    // Create the registration
     const registration = await prisma.registration.create({
       data: {
         userId: user.id,
         categoryId: categoryId,
-        status: 'CONFIRMED', 
-        qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${user.id}-${categoryId}` // Mock QR Code
+        status: 'CONFIRMED'
       }
     })
 

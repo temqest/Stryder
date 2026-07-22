@@ -11,7 +11,6 @@ export default function RegisterPage({ params }: { params: Promise<{ id: string 
   const categoryId = searchParams.get('category')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -34,34 +33,12 @@ export default function RegisterPage({ params }: { params: Promise<{ id: string 
     })
 
     if (res.ok) {
-      setIsSuccess(true)
+      const data = await res.json()
+      router.push(`/tickets/${data.registrationId}`)
     } else {
       setIsSubmitting(false)
       alert("Failed to register. Please try again.")
     }
-  }
-
-  if (isSuccess) {
-    return (
-      <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] flex items-center justify-center p-6">
-        <div className="absolute inset-0 bg-[var(--accent)] opacity-[0.02]" />
-        <div className="max-w-md w-full p-10 rounded-3xl bg-[var(--bg-panel)] border border-[var(--border-subtle)] text-center relative z-10">
-          <div className="w-24 h-24 bg-[var(--bg-base)] rounded-full flex items-center justify-center mx-auto mb-8 border border-[var(--accent)] shadow-[0_0_30px_var(--border-accent)]">
-            <CheckCircle2 className="w-12 h-12 text-[var(--accent)]" />
-          </div>
-          <h2 className="text-4xl font-black uppercase tracking-tight mb-4 text-[var(--text-primary)]">You're In!</h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            Your registration is confirmed. We've sent a mock QR code and race details to your email. See you at the starting line!
-          </p>
-          <button 
-            onClick={() => router.push('/events')}
-            className="w-full py-4 rounded-full bg-[var(--accent)] text-[#0A0A0A] font-bold uppercase tracking-wider hover:bg-[var(--accent-dim)] transition-colors"
-          >
-            Back to Events
-          </button>
-        </div>
-      </div>
-    )
   }
 
   return (

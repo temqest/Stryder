@@ -28,13 +28,14 @@ export function OrganizerSidebar({ events }: { events: { id: string; name: strin
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'All Events', href: '/dashboard/events', icon: Calendar },
     { name: 'Team & Staff', href: '/dashboard/team', icon: Users },
+    { name: 'Scanner', href: '/dashboard/scanner', icon: Activity },
   ]
 
   const eventLinks = eventId ? [
     { name: 'Event Info', href: `/dashboard/events/${eventId}`, icon: Settings },
     { name: 'Participants', href: `/dashboard/events/${eventId}/participants`, icon: Users },
     { name: 'Race Monitor', href: `/dashboard/events/${eventId}/race`, icon: Activity },
-    { name: 'Bib Design', href: `/dashboard/events/${eventId}/bib-design`, icon: Ticket },
+    // { name: 'Bib Design', href: `/dashboard/events/${eventId}/bib-design`, icon: Ticket },
   ] : []
 
   return (

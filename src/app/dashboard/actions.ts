@@ -96,3 +96,89 @@ export async function createEvent(formData: FormData) {
 
   return { success: true, eventId: event.id }
 }
+
+export async function updateEventDetails(eventId: string, formData: FormData) {
+  const name = formData.get('name') as string
+  const dateStr = formData.get('date') as string
+  const location = formData.get('location') as string
+  const description = formData.get('description') as string
+  const routeMapDataStr = formData.get('routeMapData') as string
+
+  if (!name || !dateStr) {
+    throw new Error('Name and date are required')
+  }
+  
+  let routeMapData = undefined
+  if (routeMapDataStr) {
+    try {
+      routeMapData = JSON.parse(routeMapDataStr)
+    } catch(e) {
+      console.error("Failed to parse routeMapData")
+    }
+  }
+
+  await prisma.event.update({
+    where: { id: eventId },
+    data: {
+      name,
+      date: new Date(dateStr),
+      location,
+      description,
+      ...(routeMapData !== undefined && { routeMapData })
+    }
+  })
+
+  revalidatePath('/dashboard')
+  revalidatePath(`/dashboard/events/${eventId}`)
+
+  return { success: true }
+}
+
+export async function checkInParticipant(registrationId: string) {
+  try {
+    const registration = await prisma.registration.findUnique({
+      where: { id: registrationId },
+      include: { user: true, category: { include: { event: true } } }
+    })
+
+    if (!registration) {
+      return { success: false, error: 'Registration not found' }
+    }
+
+    if (registration.checkedInAt) {
+      return { success: false, error: 'Participant is already checked in', name: registration.user.name }
+    }
+
+    await prisma.registration.update({
+      where: { id: registrationId },
+      data: { checkedInAt: new Date() }
+    })
+
+    revalidatePath('/dashboard/scanner')
+    revalidatePath(`/dashboard/events/${registration.category.eventId}`)
+
+    return { 
+      success: true, 
+      name: registration.user.name, 
+      category: registration.category.distance,
+      event: registration.category.event.name
+    }
+  } catch (error) {
+    console.error('Error checking in:', error)
+    return { success: false, error: 'Failed to process check-in' }
+  }
+}
+
+export async function saveBibDesign(eventId: string, designData: any) {
+  try {
+    await prisma.event.update({
+      where: { id: eventId },
+      data: { bibDesignData: designData }
+    })
+    revalidatePath(`/dashboard/events/${eventId}/bib-design`)
+    return { success: true }
+  } catch (error) {
+    console.error('Error saving bib design:', error)
+    return { success: false, error: 'Failed to save bib design' }
+  }
+}

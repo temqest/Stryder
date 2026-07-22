@@ -1,9 +1,11 @@
 import { Activity, QrCode, Timer, Plus, Trophy } from 'lucide-react'
 
+import { ScanQRModalButton } from '@/components/ScanQRModalButton'
+
 export default async function RaceMonitorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   return (
-    <div className="text-[var(--text-primary)] p-6 pt-24 md:p-10 md:pt-24 max-w-6xl mx-auto">
+    <div className="text-[var(--text-primary)] p-6 pt-24 md:p-10 md:pt-24 max-w-6xl mx-auto space-y-12">
       
       <div className="flex flex-col md:flex-row md:justify-between md:items-end mb-10 gap-6">
         <div>
@@ -15,9 +17,7 @@ export default async function RaceMonitorPage({ params }: { params: Promise<{ id
           </h1>
         </div>
         <div className="flex items-center space-x-3 shrink-0">
-          <button className="flex items-center px-6 py-3 bg-[var(--accent)] text-[#0A0A0A] rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[var(--accent-dim)] transition-all">
-            <QrCode className="w-5 h-5 mr-2" /> Scan Bib QR
-          </button>
+          <ScanQRModalButton />
         </div>
       </div>
 
@@ -47,6 +47,8 @@ export default async function RaceMonitorPage({ params }: { params: Promise<{ id
             <div className="text-xs text-[var(--text-secondary)]">Runners On Course</div>
          </div>
       </div>
+
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
