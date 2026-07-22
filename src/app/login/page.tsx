@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Activity, ArrowRight, User, Building2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const [role, setRole] = useState<'RUNNER' | 'ORGANIZER'>('RUNNER')
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   const handleGoogleLogin = async () => {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
